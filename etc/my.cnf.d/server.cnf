@@ -1,0 +1,140 @@
+#
+# These groups are read by MariaDB server.
+# Use it for options that only the server (but not clients) should see
+#
+# See the examples of server my.cnf files in /usr/share/mysql/
+#
+
+# this is read by the standalone daemon and embedded servers
+[server]
+
+# this is only for the mysqld standalone daemon
+[mysqld]
+port=3306
+
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+
+skip-character-set-client-handshake
+character-set-server    = utf8
+collation-server        = utf8_bin
+
+symbolic-links          = 0
+
+sql_mode                = "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
+
+max_connections         = 200
+back_log                = 50
+max_connect_errors      = 10
+table_open_cache        = 1100
+max_allowed_packet      = 1G
+binlog_cache_size       = 1M
+max_heap_table_size     = 64M
+thread_cache_size       = 200
+query_cache_size        = 0
+query_cache_limit       = 0
+ft_min_word_len         = 4
+skip-name-resolve
+
+# Thread Buffer
+sort_buffer_size        = 8M
+join_buffer_size        = 4M
+read_rnd_buffer_size    = 4M
+read_buffer_size        = 4M
+myisam_sort_buffer_size = 1M
+
+autocommit              = 1
+thread_stack            = 192K
+transaction_isolation   = READ-COMMITTED
+tmp_table_size          = 64M
+tmpdir                  = /tmp
+
+log-bin                 = /var/log/mysql/mysql-bin.log
+expire_logs_days        = 1
+max_binlog_size         = 1G
+sync_binlog             = 1
+binlog_format           = ROW
+
+slow_query_log          = 1
+slow_query_log_file     = /var/log/mysql/slow_query.log
+long_query_time         = 1
+# log_queries_not_using_indexes
+
+log-error               = /var/log/mysql/error.log
+log-warnings            = 1
+
+log_bin_trust_function_creators = 1
+
+# performance_schema = 1
+
+# *** INNODB Specific options ***
+innodb_file_per_table
+innodb_buffer_pool_size         = 25G
+innodb_buffer_pool_instances    = 25
+innodb_data_file_path           = ibdata1:10M:autoextend
+innodb_autoextend_increment     = 500
+innodb_io_capacity              = 1200
+innodb_io_capacity_max          = 2000
+innodb_read_io_threads          = 3
+innodb_write_io_threads         = 3
+innodb_thread_concurrency       = 0
+innodb_flush_log_at_trx_commit  = 1
+innodb_log_buffer_size          = 64M
+innodb_log_file_size            = 512M
+innodb_log_files_in_group       = 4
+innodb_max_dirty_pages_pct      = 90
+innodb_lock_wait_timeout        = 120
+innodb_adaptive_flushing        = 1
+innodb_autoinc_lock_mode        = 2
+innodb_large_prefix             = 1
+innodb_file_format              = Barracuda
+innodb_file_format_max          = Barracuda
+innodb_log_block_size           = 4096
+innodb_flush_neighbors          = 0
+innodb_sync_array_size          = 8
+innodb_flush_method             = O_DIRECT
+innodb_print_all_deadlocks      = 1
+
+server_id                       = 191
+
+# Plugin
+plugin-load=rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so;server_audit=server_audit.so;pam=auth_pam.so;SEQUENCE=ha_sequence.so
+
+# Audit
+server_audit_logging          = ON
+server_audit_events           = CONNECT,QUERY
+server_audit_excl_users       = ''
+server_audit_file_path        = /var/log/mysql/server_audit.log
+server_audit_file_rotations   = 0
+server_audit_file_rotate_size = 0
+
+# For Master
+rpl_semi_sync_master_enabled     = 1
+rpl_semi_sync_master_timeout        = 1000
+rpl_semi_sync_master_wait_no_slave  = OFF
+
+# For Slave
+read_only                        = 0
+rpl_semi_sync_slave_enabled      = 0
+log-slave-updates                = 0
+relay-log           = /var/log/mysql/relay-bin
+relay-log-index     = /var/log/mysql/relay-bin
+relay_log_info_file = /var/log/mysql/relay-bin.info
+relay_log_purge     = 1
+
+
+
+# this is only for embedded server
+[embedded]
+
+# This group is only read by MariaDB servers, not by MySQL.
+# If you use the same .cnf file for MySQL and MariaDB,
+# you can put MariaDB-only options here
+[mariadb]
+thread_handling = pool-of-threads
+thread_pool_size = 32
+
+# This group is only read by MariaDB-10.0 servers.
+# If you use the same .cnf file for MariaDB of different versions,
+# use this group for options that older servers don't understand
+[mariadb-10.0]
